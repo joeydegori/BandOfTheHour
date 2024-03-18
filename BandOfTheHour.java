@@ -73,35 +73,60 @@ public class BandOfTheHour {
      * If the position is already occupied or the weight limit for the row would be exceeded, error messages are displayed.
      */
     private static void addMusician() {
-        System.out.print("Please enter row letter (A-" + (char) ('A' + numRows - 1) + "): ");
-        char row = Character.toUpperCase(keyboard.next().charAt(0));
-        int rowIndex = row - 'A';
-        if (rowIndex < 0 || rowIndex >= numRows) {
-            System.out.println("Invalid row. Please try again.");
-            return;
+        char row;
+        int rowIndex;
+        int position;
+
+        while (true) {
+            System.out.print("Please enter row letter (A-" + (char) ('A' + numRows - 1) + "): ");
+            row = Character.toUpperCase(keyboard.next().charAt(0));
+            rowIndex = row - 'A';
+            if (rowIndex < 0 || rowIndex >= numRows) {
+                System.out.println("Invalid row. Please try again.");
+            } else {
+                break; // Valid row, exit the loop
+            }
         }
+
         int[] rowWeights = weights[rowIndex];
-        System.out.print("Please enter position number (1 to " + numPositions[rowIndex] + "): ");
-        int position = keyboard.nextInt();
-        if (position < 1 || position > numPositions[rowIndex]) {
-            System.out.println("Invalid position. Please try again.");
-            return;
+
+        while (true) {
+            System.out.print("Please enter position number (1 to " + numPositions[rowIndex] + "): ");
+            position = keyboard.nextInt();
+            if (position < 1 || position > numPositions[rowIndex]) {
+                System.out.println("Invalid position. Please try again.");
+            } else if (rowWeights[position - 1] != 0) {
+                System.out.println("Position already occupied by a musician.");
+                System.out.print("(A)dd, (R)emove, (P)rint, e(X)it: ");
+                char choice = Character.toUpperCase(keyboard.next().charAt(0));
+                if (choice == 'X') {
+                    return; // Exit the method
+                } else if (choice != 'A') {
+                    return; // Return to the menu
+                }
+                // If the user chooses to add, continue to prompt for position
+            } else {
+                // Valid position, exit the loop
+                break;
+            }
         }
-        if (rowWeights[position - 1] == 0) {
+
+
+        while (true) {
             System.out.print("Please enter weight (45.0 to 200.0): ");
             int weight = keyboard.nextInt();
             if (weight >= 45 && weight <= 200) {
                 if (getRowTotalWeight(rowIndex) + weight <= MAX_WEIGHT_PER_POSITION * numPositions[rowIndex]) {
-                        rowWeights[position - 1] = weight;
-                        System.out.println("****** Musician added.");
+                    rowWeights[position - 1] = weight;
+                    System.out.println("****** Musician added.");
+                    break; // Valid weight, exit the loop
                 } else {
                     System.out.println("Row weight limit exceeded. Cannot add musician.");
+                    break; // Exit the loop to prevent continuous weight input prompt
                 }
             } else {
                 System.out.println("Invalid weight. Please enter a weight between 45 and 200.");
             }
-        } else {
-            System.out.println("Position " + position + " in row " + row + " is already occupied.");
         }
     }
 
@@ -137,25 +162,26 @@ public class BandOfTheHour {
     /**
      * Prints the current assignment of weights for each position in the band setup.
      */
-private static void printAssignment() {
-    System.out.println("\nCurrent:");
-    for (int index = 0; index < numRows; index++) {
-        char rowLabel = (char) ('A' + index);
-        int[] rowWeights = weights[index];
-        System.out.print(rowLabel + ": ");
-        for (int j = 0; j < numPositions[index]; j++) {
-            System.out.printf("%6.1f ", (float) rowWeights[j]);
-        }
-        System.out.print("[");
-        for (int j = 0; j < numPositions[index]; j++) {
-            System.out.printf("%7.1f", (float) rowWeights[j]);
-            if (j < numPositions[index] - 1) {
-                System.out.print(", ");
+    private static void printAssignment() {
+        System.out.println("\nCurrent:");
+        for (int index = 0; index < numRows; index++) {
+            char rowLabel = (char) ('A' + index);
+            int[] rowWeights = weights[index];
+            float total = 0.0f;
+            int count = 0;
+
+            System.out.print(rowLabel + ": ");
+
+            for (int j = 0; j < numPositions[index]; j++) {
+                System.out.printf("%6.1f ", (float) rowWeights[j]);
+                total += rowWeights[j];
+                count++;
             }
+
+            float average = (count > 0) ? total / count : 0.0f;
+            System.out.printf("[%7.1f, %7.1f]%n", total, average);
         }
-        System.out.println("]");
     }
-}
     /**
      * Calculates the total weight of all positions in the rows.
      *
