@@ -1,5 +1,13 @@
 import java.util.Scanner;
+/**
+ *  Program to help organize where the musicians will stand when they play at away games.
+ * @author Joey DeGori
+ * @version 1.0
+ */
 
+/**
+ * This class represents the band of the hour setup for a performance.
+ */
 public class BandOfTheHour {
     private static final Scanner keyboard = new Scanner(System.in);
     private static final int MAX_ROWS = 10;
@@ -35,6 +43,10 @@ public class BandOfTheHour {
         keyboard.close();
     }
 
+    /**
+     * Initializes the information for the band, the rows and positions.
+     *
+     */
     private static void initialize() {
         System.out.println("Welcome to the Band of the Hour\n-------------------------------");
         do {
@@ -54,6 +66,12 @@ public class BandOfTheHour {
         }
     }
 
+    /**
+     * Adds a musician to a position in the band setup.
+     * Prompts the user to input the row letter, position number, and weight of the musician.
+     * Checks if the entered row, position, and weight are valid and within the limit.
+     * If the position is already occupied or the weight limit for the row would be exceeded, error messages are displayed.
+     */
     private static void addMusician() {
         System.out.print("Please enter row letter (A-" + (char) ('A' + numRows - 1) + "): ");
         char row = Character.toUpperCase(keyboard.next().charAt(0));
@@ -87,7 +105,12 @@ public class BandOfTheHour {
         }
     }
 
-
+    /**
+     * Removes a musician from a position in the band setup.
+     * Prompts the user to input the row letter and position number.
+     * If the row or position is invalid or if there is no musician at the position,
+     * error messages are displayed.
+     */
     private static void removeMusician() {
         System.out.print("Enter the row letter (A-" + (char) ('A' + numRows - 1) + "): ");
         char row = Character.toUpperCase(keyboard.next().charAt(0));
@@ -111,20 +134,9 @@ public class BandOfTheHour {
         }
     }
 
-//    private static void printAssignment() {
-//        System.out.println("\nCurrent Assignment:");
-//        for (int index = 0; index < numRows; index++) {
-//            char rowLabel = (char) ('A' + index);
-//            int[] rowWeights = weights[index];
-//            int totalWeight = getRowTotalWeight(index);
-//            double averageWeight = (double) totalWeight / numPositions[index];
-//            System.out.print("Row " + rowLabel + ": ");
-//            for (int j = 0; j < numPositions[index]; j++) {
-//                System.out.print(rowWeights[j] + "kg ");
-//            }
-//            System.out.println("\nTotal Weight: " + totalWeight + "kg  Average Weight: " + averageWeight + "kg");
-//        }
-//    }
+    /**
+     * Prints the current assignment of weights for each position in the band setup.
+     */
 private static void printAssignment() {
     System.out.println("\nCurrent:");
     for (int index = 0; index < numRows; index++) {
@@ -132,11 +144,11 @@ private static void printAssignment() {
         int[] rowWeights = weights[index];
         System.out.print(rowLabel + ": ");
         for (int j = 0; j < numPositions[index]; j++) {
-            System.out.printf("%6.1f ", rowWeights[j] / 10.0);
+            System.out.printf("%6.1f ", (float) rowWeights[j]);
         }
         System.out.print("[");
         for (int j = 0; j < numPositions[index]; j++) {
-            System.out.printf("%7.1f", rowWeights[j] / 10.0);
+            System.out.printf("%7.1f", (float) rowWeights[j]);
             if (j < numPositions[index] - 1) {
                 System.out.print(", ");
             }
@@ -144,7 +156,12 @@ private static void printAssignment() {
         System.out.println("]");
     }
 }
-
+    /**
+     * Calculates the total weight of all positions in the rows.
+     *
+     * @param rowIndex The index of the row to calculate the total weight.
+     * @return The total weight of all positions in the row.
+     */
     private static int getRowTotalWeight(int rowIndex) {
         int totalWeight = 0;
         for (int weight : weights[rowIndex]) {
